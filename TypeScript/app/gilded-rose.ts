@@ -19,43 +19,47 @@ export class GildedRose {
 
   public updateQuality() {
     for (const item of this.items) {
-      this.updateItemQuality(item);
+      this.nextDay(item);
+      if (item.sellIn < 0) {
+        this.updateExpiredItemQuality(item);
+      } else {
+        this.updateItemQuality(item);
+      }
     }
     return this.items;
   }
 
-  private updateItemQuality(item: Item): void {
-    if (item.name != "Sulfuras, Hand of Ragnaros") {
+  private nextDay(item: Item): void {
+    if (item.name !== "Sulfuras, Hand of Ragnaros") {
       item.sellIn -= 1;
     }
+  }
 
-    if (
-      item.name === "Aged Brie" ||
-      item.name === "Backstage passes to a TAFKAL80ETC concert"
-    ) {
-      if (item.name == "Backstage passes to a TAFKAL80ETC concert") {
-        if (item.sellIn <= 4) {
-          this.increaseItemQuality(item, 3);
-        } else if (item.sellIn <= 9) {
-          this.increaseItemQuality(item, 2);
-        } else {
-          this.increaseItemQuality(item, 1);
-        }
+  private updateItemQuality(item: Item): void {
+    if (item.name === "Aged Brie") {
+      this.increaseItemQuality(item, 1);
+    } else if (item.name === "Backstage passes to a TAFKAL80ETC concert") {
+      if (item.sellIn <= 4) {
+        this.increaseItemQuality(item, 3);
+      } else if (item.sellIn <= 9) {
+        this.increaseItemQuality(item, 2);
       } else {
         this.increaseItemQuality(item, 1);
       }
-    } else if (item.name != "Sulfuras, Hand of Ragnaros") {
+    } else if (item.name === "Sulfuras, Hand of Ragnaros") {
+    } else {
       this.decreaseItemQuality(item, 1);
     }
+  }
 
-    if (item.sellIn < 0) {
-      if (item.name === "Aged Brie") {
-        this.increaseItemQuality(item, 1);
-      } else if (item.name === "Backstage passes to a TAFKAL80ETC concert") {
-        item.quality = 0;
-      } else if (item.name != "Sulfuras, Hand of Ragnaros") {
-        this.decreaseItemQuality(item, 1);
-      }
+  private updateExpiredItemQuality(item): void {
+    if (item.name === "Aged Brie") {
+      this.increaseItemQuality(item, 2);
+    } else if (item.name === "Backstage passes to a TAFKAL80ETC concert") {
+      this.dropItemQuality(item);
+    } else if (item.name === "Sulfuras, Hand of Ragnaros") {
+    } else {
+      this.decreaseItemQuality(item, 2);
     }
   }
 
@@ -67,5 +71,9 @@ export class GildedRose {
   private decreaseItemQuality(item: Item, amount: number): void {
     const resultQuality = item.quality - amount;
     item.quality = resultQuality > 0 ? resultQuality : 0;
+  }
+
+  private dropItemQuality(item: Item): void {
+    item.quality = 0;
   }
 }
