@@ -7,7 +7,8 @@
     "sourceMap": false,
     "baseUrl": "./",
     "resolveJsonModule": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "path": {}
   },
   "exclude": [
     "node_modules"
